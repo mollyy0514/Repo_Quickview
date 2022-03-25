@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Repo_Quickview/static/css/main.cd966224.css",
+    "main.js": "/Repo_Quickview/static/js/main.dedaa81b.js",
+    "index.html": "/Repo_Quickview/index.html",
+    "main.cd966224.css.map": "/Repo_Quickview/static/css/main.cd966224.css.map",
+    "main.dedaa81b.js.map": "/Repo_Quickview/static/js/main.dedaa81b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.cd966224.css",
+    "static/js/main.dedaa81b.js"
+  ]
+}
