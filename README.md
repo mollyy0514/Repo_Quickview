@@ -1,70 +1,115 @@
-# Getting Started with Create React App
+# :space_invader:Repositary Quickview
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is designed to search a user's repository list, and view their basic information easily.
 
-## Available Scripts
+The project comprises of:
 
-In the project directory, you can run:
+* An searching page
+* An searching results page
+* Every repositary owns a self-introduction page.
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Table of Contents
+- [Repositary Quickview](#Repositary-Quickview)
+    - [Quick Start](#Quick-Start)
+      - [Run](#Run)
+      - [Search](#Search)
+        - [Not seeing the expected output?](#Not-seeing-the-expected-output?)
+      - [Repository List](#Repository-List)
+      - [Single Repositary Page](#Single-Repositary-Page)
+    - [Framework](#Framework)
+        - [Search.js](#Search.js)
+            - [GitHub API request](#GitHub-API-request)
+            - [HttpError](#HttpError)
+        - [Results.js](#Results.js)
+            - [Reposiory List](#Repository-List)
+            - [Re-request API](#Re-request-API)
+        - [RepoPage.js](#RepoPage.js)
+            - [GitHub API request](#GitHub-API-request)
+        - [Routes](#Routes)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Quick Start
 
-### `npm test`
+### Run
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To run the project, run this command:
 
-### `npm run build`
+```bash
+$ npm run start
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Search
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+After entering the page, you can enter any username you want. If the user is validate, you will be link to the page which shows a list of repositories.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Not seeing the expected output?
 
-### `npm run eject`
+- If you see the result page displays `No Match User!`, please try again and be sure that you've enter the right username.
+- Do not click enter without input anything, you will be shown `Invalid Input!`.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+> :warning: Note that there's no difference between uppercase and lowercase in the current version.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Repositary List
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+In the repositary list page, with the username in header, after scrolling down to the bottom of the page, it will automatically fetch more data via the [GitHub Rest API](https://docs.github.com/en/rest) until there's no more repositary.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The result list will contain the repositary name, description, and star count.
 
-## Learn More
+### Single Repositary Page
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Users can click in to any repositary, and it will show a page of the repositary which contains full name, star counts, created time, and description, as well as a link to the original repositary's URL.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+## Framework
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+The data is requested from:
 
-### Analyzing the Bundle Size
+- [List repositories for a user](https://docs.github.com/en/rest/reference/repos#list-repositories-for-a-user)
+- [Get a repository](https://docs.github.com/en/rest/reference/repos#get-a-repository)
+- [octokit.request](https://github.com/octokit/request.js/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Search.js
 
-### Making a Progressive Web App
+#### GitHub API request
+The initial request may be like this if we would like to request repository of  `mollyy0514`, and the maximum results per page is set to be 10, as well as it is sorted by their created time.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```javascript=
+const result =  await request('GET /users/{username}/repos', 
+                {
+                    username: 'mollyy0514',
+                    per_page: 10,
+                    sort: 'created'
+                })
+```
+#### HttpError
+If the input username is unvalaible, it will report a HttpError, and the page will display `No Match User!`. You can click the `Back` button to get back to the initial searching page.
 
-### Advanced Configuration
+In addition, if you input nothing and click enter, it will show `Invalid Input!`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Results.js
 
-### Deployment
+After clicking the `Search` button, `Results` will be called.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+#### Repository list
 
-### `npm run build` fails to minify
+initial results will be passed to Results.js, and by using `map` function to construct an array `repoList`, which every item in this array is an object, storing a repository with some information.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### Re-request API
+
+
+
+### RepoPage.js
+
+#### GitHub API request
+
+After entering a single repositary page, it will request the repositay data from the API, the method is the same as I did in [Search.js](#Search.js).
+
+The whole information of the repository is stored as an  object, which the variable name is `repoInfo`.
+
+
+### Routes
+- Initial path: `/Repo_Quickview/`
+- After entering a username, the route will be changed to: `/users/{username}/repos`, no matter the user is valid or not.
+- If we click the `Back` button, the route will link to the initial path again.
+- As clicking one of the repository, the route is set to be `/users/{username}/repos/{repoName}`.
+- The `Back` button in a single repositary page, is link back to the repository list page.

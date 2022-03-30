@@ -11,9 +11,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -34,18 +31,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
   }));
 
-//   function createData(name, description, starCnt, id) {
-//     return { name, description, starCnt, id };
-//   }
-
-//   const rows = [
-//     createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-//     createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-//     createData('Eclair', 262, 16.0, 24, 6.0),
-//     createData('Cupcake', 305, 3.7, 67, 4.3),
-//     createData('Gingerbread', 356, 16.0, 49, 3.9),
-//   ];
-
 const Results = (props) => {
 
     const { repo } = props;
@@ -53,7 +38,6 @@ const Results = (props) => {
     const searchOwner = props.header;
 
     var repoInfoList = <li>hihi</li>;
-    // var repoStar = <li></li>
     const [repoLen, setRepoLen] = useState(-1);
     const [repoOwner, setRepoOwner] = useState("");
     const [repoList, setRepoList] = useState([]);
@@ -64,7 +48,7 @@ const Results = (props) => {
         }
         else {
             setRepoLen(Object.keys(repo.data).length);
-            console.log("repolen setted", repo.data, repoLen, Object.keys(repo.data).length)
+            // console.log("repolen setted", repo.data, repoLen, Object.keys(repo.data).length)
             resetRepoList(Object.keys(repo.data).length);
         }
         // console.log(typeof(repo));
@@ -75,7 +59,6 @@ const Results = (props) => {
             console.log("repo data is undefined")
         }
         else if (e > 0) {
-            // console.log("uses");
             let owner = repo.data[0].owner.login;
             let newArray = [];
 
@@ -85,18 +68,12 @@ const Results = (props) => {
                     owner: '',
                     name: '',
                     starCnt: '',
-                    time: '',
-                    fullname: '',
-                    url: '',
                     description: '',
                 }
                 info.id = item.id;
                 info.owner = searchOwner;
                 info.name = item.name;
                 info.starCnt = item.stargazers_count;
-                info.time = item.created_at;
-                info.fullname = item.full_name;
-                info.url = item.html_url;
                 info.description = item.description;
 
                 newArray.push(info);
@@ -120,7 +97,7 @@ const Results = (props) => {
                 { repoOwner }
             </header>
             
-            {(repoLen > 0) ? (<p className="sort">sorted by alphabet</p>):(<></>)}
+            {(repoLen > 0) ? (<p className="sort">sorted by created time </p>):(<></>)}
             
             {/* <ul>
                 {(repoLen === -1) ? (

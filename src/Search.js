@@ -29,7 +29,9 @@ const Search = () => {
         try {
             // const result = await axios(listUrl);
             const result =  await request('GET /users/{username}/repos', {
-                username: username
+                username: username,
+                per_page: 10,
+                sort: 'created'
             })
             console.log("useruser: ", username);
             console.log(result);
@@ -61,7 +63,7 @@ const Search = () => {
             {(searchFlag === false) ? (
             <div className="search">
                 <input className="username" type="text" placeholder="Search" value={username} onChange={handleChange}></input>
-                <button className="searchBtn" onClick={handleClick}>Enter</button>
+                <button type="submit" className="searchBtn" onClick={handleClick} onKeyPress={(e) => e.key === 'Enter' && {handleClick}}>Enter</button>
 
             </div>
             ) : (<div />
@@ -76,7 +78,7 @@ const Search = () => {
                         ) : (
                             <div className="invalidDiv">
                                 <Link to="/Repo_Quickview/" className="backToSearch" onClick={() => {window.location.href="/"}}>Back</Link>
-                                <p className="invalid">No match User!</p>
+                                <p className="invalid">No Match User!</p>
                             </div>
                         )} 
                     />
