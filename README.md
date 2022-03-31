@@ -8,6 +8,7 @@ The project comprises of:
 * An searching results page
 * Every repositary owns a self-introduction page.
 
+The project is deployed at github-pages: [https://mollyy0514.github.io/Repo_Quickview/](https://mollyy0514.github.io/Repo_Quickview/)
 
 ## Table of Contents
 - [Repositary Quickview](#Repositary-Quickview)
@@ -22,8 +23,8 @@ The project comprises of:
             - [GitHub API request](#GitHub-API-request)
             - [HttpError](#HttpError)
         - [Results.js](#Results.js)
-            - [Reposiory List](#Repository-List)
-            - [Re-request API](#Re-request-API)
+            - [Reposiory list](#Repository-List)
+            - [Infinite scroll component](#Infinite-scroll-component)
         - [RepoPage.js](#RepoPage.js)
             - [GitHub API request](#GitHub-API-request)
         - [Routes](#Routes)
@@ -68,14 +69,14 @@ The data is requested from:
 - [Get a repository](https://docs.github.com/en/rest/reference/repos#get-a-repository)
 - [octokit.request](https://github.com/octokit/request.js/)
 
+
 ### Search.js
 
 #### GitHub API request
 The initial request may be like this if we would like to request repository of  `mollyy0514`, and the maximum results per page is set to be 10, as well as it is sorted by their created time.
 
-```javascript=
-const result =  await request('GET /users/{username}/repos', 
-                {
+```javascript
+const result =  await request('GET /users/{username}/repos', {
                     username: 'mollyy0514',
                     per_page: 10,
                     sort: 'created'
@@ -92,23 +93,45 @@ After clicking the `Search` button, `Results` will be called.
 
 #### Repository list
 
-initial results will be passed to Results.js, and by using `map` function to construct an array `repoList`, which every item in this array is an object, storing a repository with some information.
+In Results.js, the initial results will be passed by Search.js, and by using `map` function to construct an array `repoList`, which every item in this array is an object.
 
-#### Re-request API
+#### Infinite scroll component
 
+The method that I used to triggered API re-render every time as scrolling down to the bottom of the page is
+[React-infinite-scroll-component](https://www.npmjs.com/package/react-infinite-scroll-component).
 
+Below is the code from documentation:
+```javascript
+import InfiniteScroll from 'react-infinite-scroll-component';
+
+<InfiniteScroll
+    dataLength={repoList.length} //This is important field to render the next data
+    next={fetchData}
+    hasMore={hasMore}
+    loader={<h4 className="seenAll" style={{ textAlign: 'center' }}>Loading...</h4>}
+    endMessage={<h4 className="seenAll" style={{ textAlign: 'center' }}>
+                    <b>You have seen it all!</b>
+                </h4>}
+>
+    // function that deals with what to print out
+</ InfiniteScroll>
+```
+
+- `fetchData` function is used to fetch data from GiHub API if there's more data to fetch. If so, it will return the data to `hasMore` function.
+- `hasMore` function is set to check whether there's more data to fetch, adding page, and append data which returned by `fetchData` funciton.
+- If there's still more than 10 repository in this GitHub user, as scrolling down to the bottom, it will show `Loading...` while fetching, and it there's no more data to get, `You have seen it all!` will be shown in the bottom.
 
 ### RepoPage.js
 
 #### GitHub API request
 
-After entering a single repositary page, it will request the repositay data from the API, the method is the same as I did in [Search.js](#Search.js).
+After entering a single repositary page, it will request the repository data from the API, the method is the same as I did in [Search.js](#Search.js).
 
-The whole information of the repository is stored as an  object, which the variable name is `repoInfo`.
+The whole information of the repository is stored as an object, which the variable name is `repoInfo`.
 
 
 ### Routes
-- Initial path: `/Repo_Quickview/`
+- Initial path: `/`
 - After entering a username, the route will be changed to: `/users/{username}/repos`, no matter the user is valid or not.
 - If we click the `Back` button, the route will link to the initial path again.
 - As clicking one of the repository, the route is set to be `/users/{username}/repos/{repoName}`.
