@@ -11,6 +11,14 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+import UseRepoSearch from "./UseRepoSearch";
+
+const loadFunc = () => {
+    if(!this.state.isLoading) {
+      this.props.fetchItems();
+    }
+  }
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -53,6 +61,8 @@ const Results = (props) => {
         }
         // console.log(typeof(repo));
     }, [])
+
+
 
     const resetRepoList = (e) => {
         if (repo.data === undefined) {
@@ -114,6 +124,7 @@ const Results = (props) => {
                     )
                  )}
             </ul> */}
+
             {(repoLen === -1) ? (
                 repoInfoList = <li></li>
                  ) : ((repoLen > 0) ? (

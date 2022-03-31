@@ -7,7 +7,9 @@ request: https://github.com/octokit/request.js#request
 import {BrowserRouter as Router, Route, Switch, Routes} from 'react-router-dom';
 
 import Title from "./Title.js";
-import Search from "./Search.js";
+// import Search from "./Search.js";
+import Search_test from './Search_test.js';
+
 
 function App() {
 
@@ -15,7 +17,8 @@ function App() {
 		<Router>
 			<div className="App">
 				<Title />
-				<Search />
+				{/* <Search /> */}
+				<Search_test />
 			</div>
 		</Router>
 	);

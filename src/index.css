@@ -18,6 +18,11 @@ a:hover {
 li {
   list-style-type: none;
 }
+
+h4 {
+  padding: 20px;
+  font-size: 20px;
+}
 /* Title */
 .appTitle {
   text-align: center;
