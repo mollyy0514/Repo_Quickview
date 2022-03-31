@@ -11,13 +11,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-import UseRepoSearch from "./UseRepoSearch";
-
-const loadFunc = () => {
-    if(!this.state.isLoading) {
-      this.props.fetchItems();
-    }
-  }
+import InfiniteScroll from "react-infinite-scroll-component";
+import { request } from "@octokit/request";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -39,10 +34,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
   }));
 
-const Results = (props) => {
-
+const Results_test = (props) => {
+ 
     const { repo } = props;
-    console.log("REPOS: ", repo);
+    // console.log("REPOS: ", repo);
     const searchOwner = props.header;
 
     var repoInfoList = <li>hihi</li>;
@@ -52,53 +47,53 @@ const Results = (props) => {
 
     useEffect(() => {
         if (repo.data === undefined) {
-            console.log("repo data is undefined")
+            // console.log("repo data is undefined")
         }
         else {
             setRepoLen(Object.keys(repo.data).length);
-            // console.log("repolen setted", repo.data, repoLen, Object.keys(repo.data).length)
             resetRepoList(Object.keys(repo.data).length);
         }
-        // console.log(typeof(repo));
     }, [])
 
 
-
-    const resetRepoList = (e) => {
+    const resetRepoList = (l) => {
         if (repo.data === undefined) {
-            console.log("repo data is undefined")
+            // console.log("repo data is undefined")
         }
-        else if (e > 0) {
+        else if (l > 0) {
             let owner = repo.data[0].owner.login;
-            let newArray = [];
-
-            repo.data.map((item) => {
-                var info = {
-                    id: '',
-                    owner: '',
-                    name: '',
-                    starCnt: '',
-                    description: '',
-                }
-                info.id = item.id;
-                info.owner = searchOwner;
-                info.name = item.name;
-                info.starCnt = item.stargazers_count;
-                info.description = item.description;
-
-                newArray.push(info);
-                console.log("debug: ", newArray);
-                
-            })
-            // console.log("final input: ", newArray);
             setRepoOwner(owner);
-            setRepoList(newArray);
+            setRepoList(repo.data);
         }
         else {
             setRepoList("No Repos found!");
-            // console.log("nothing...")
         }
     }
+
+    const [hasMore, sethasMore] = useState((Object.keys(repo.data).length < 10) ? (false) : (true));
+    const [page, setpage] = useState(2);
+
+    const fetchComments = async () => {
+        const res =  await request('GET /users/{username}/repos', {
+            username: repoOwner,
+            per_page: 10,
+            sort: 'created',
+            page: page
+        })
+        const data = res.data;
+        // console.log("data: ", data)
+        return data;
+    };
+
+    const fetchData = async () => {
+        const commentsFormServer = await fetchComments();
+
+        setRepoList([...repoList, ...commentsFormServer]);
+        if (commentsFormServer.length === 0 || commentsFormServer.length < 10) {
+            sethasMore(false);
+        }
+        setpage(page + 1);
+    };
 
     return (
         <div className="results">
@@ -108,26 +103,21 @@ const Results = (props) => {
             </header>
             
             {(repoLen > 0) ? (<p className="sort">sorted by created time </p>):(<></>)}
-            
-            {/* <ul>
-                {(repoLen === -1) ? (
-                    repoInfoList = <li></li>
-                 ) : ((repoLen > 0) ? (
-                        repoInfoList = repoList.map((item) => 
-                        <li className="repoList" key={ item.id }>
-                            <Link to={`/users/${repoOwner}/repos/${item.name}`}>
-                                { item.name } { item.starCnt }
-                            </Link>
-                        </li>)
-                    ) : (
-                        repoInfoList = <li className="noRepo">No Repositary found.</li>
-                    )
-                 )}
-            </ul> */}
 
             {(repoLen === -1) ? (
-                repoInfoList = <li></li>
+                <div></div>
                  ) : ((repoLen > 0) ? (
+                    <InfiniteScroll
+                        dataLength={repoList.length} //This is important field to render the next data
+                        next={fetchData}
+                        hasMore={hasMore}
+                        loader={<h4 className="seenAll" style={{ textAlign: 'center' }}>Loading...</h4>}
+                        endMessage={
+                            <h4 className="seenAll" style={{ textAlign: 'center' }}>
+                                <b>You have seen it all!</b>
+                            </h4>
+                        }
+                    >
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                                 <TableHead>
@@ -137,35 +127,40 @@ const Results = (props) => {
                                     <StyledTableCell align="right">Stars&nbsp;</StyledTableCell>
                                 </TableRow>
                                 </TableHead>
+                                
                                 <TableBody className="repoTable">
-                                {repoInfoList = repoList.map((item) => (
-                                    <StyledTableRow hover role="checkbox" key={item.id}>
-                                        <StyledTableCell className="tableRepoName" component="th" scope="row">
-                                            <Link to={`/users/${repoOwner}/repos/${item.name}`}>
-                                                {item.name}
-                                            </Link>
-                                        </StyledTableCell>
-                                        <StyledTableCell className="starCnt" align="right">
+                                
+                                    {repoList.map((item) => (
+                                        <StyledTableRow hover role="checkbox" key={item.id}>
+                                            <StyledTableCell className="tableRepoName" component="th" scope="row">
                                                 <Link to={`/users/${repoOwner}/repos/${item.name}`}>
-                                                    {item.description}
+                                                    {item.name}
                                                 </Link>
                                             </StyledTableCell>
-                                        <StyledTableCell className="starCnt" align="right">
-                                            <Link to={`/users/${repoOwner}/repos/${item.name}`}>
-                                                {item.starCnt}
-                                            </Link>
-                                        </StyledTableCell>
-                                    </StyledTableRow>
-                                ))}
+                                            <StyledTableCell className="tableDescription" align="right">
+                                                    <Link to={`/users/${repoOwner}/repos/${item.name}`}>
+                                                        {item.description}
+                                                    </Link>
+                                                </StyledTableCell>
+                                            <StyledTableCell className="tableStarCnt" align="right">
+                                                <Link to={`/users/${repoOwner}/repos/${item.name}`}>
+                                                    {item.stargazers_count}
+                                                </Link>
+                                            </StyledTableCell>
+                                        </StyledTableRow>
+                                    ))}
                                 </TableBody>
+                                
                             </Table>
                         </TableContainer>
+                    </InfiniteScroll>
                     ) : (
-                        repoInfoList = <li className="noRepo">No Repositary found.</li>
+                        <div className="noRepo">No Repositary found.</div>
                     )
                  )}
+                 
         </div>
      );
 }
  
-export default Results;
+export default Results_test;
