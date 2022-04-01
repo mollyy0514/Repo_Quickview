@@ -6,18 +6,18 @@ The project comprises of:
 
 * An searching page
 * An searching results page
-* Every repositary owns a self-introduction page.
+* Every repository owns a self-introduction page.
 
 The project is deployed at github-pages: [https://mollyy0514.github.io/Repo_Quickview/](https://mollyy0514.github.io/Repo_Quickview/)
 
 ## Table of Contents
-- [Repositary Quickview](#Repositary-Quickview)
+- [Repository Quickview](#Repository-Quickview)
     - [Quick Start](#Quick-Start)
       - [Run](#Run)
       - [Search](#Search)
         - [Not seeing the expected output?](#Not-seeing-the-expected-output?)
       - [Repository List](#Repository-List)
-      - [Single Repositary Page](#Single-Repositary-Page)
+      - [Single Repository Page](#Single-Repository-Page)
     - [Framework](#Framework)
         - [Search.js](#Search.js)
             - [GitHub API request](#GitHub-API-request)
@@ -50,15 +50,15 @@ After entering the page, you can enter any username you want. If the user is val
 
 > :warning: Note that there's no difference between uppercase and lowercase in the current version.
 
-### Repositary List
+### Repository List
 
-In the repositary list page, with the username in header, after scrolling down to the bottom of the page, it will automatically fetch more data via the [GitHub Rest API](https://docs.github.com/en/rest) until there's no more repositary.
+In the repository list page, with the username in header, after scrolling down to the bottom of the page, it will automatically fetch more data via the [GitHub Rest API](https://docs.github.com/en/rest) until there's no more repository.
 
-The result list will contain the repositary name, description, and star count.
+The result list will contain the repository name, description, and star count.
 
-### Single Repositary Page
+### Single Repository Page
 
-Users can click in to any repositary, and it will show a page of the repositary which contains full name, star counts, created time, and description, as well as a link to the original repositary's URL.
+Users can click in to any repository, and it will show a page of the repository which contains full name, star counts, created time, and description, as well as a link to the original repository's URL.
 
 
 ## Framework
