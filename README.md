@@ -1,4 +1,4 @@
-# :space_invader:Repository Quickview
+# :space_invader: Repository Quickview
 
 This project is designed to search a user's repository list, and view their basic information easily.
 
